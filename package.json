@@ -1,0 +1,36 @@
+{
+	"name": "react-native-style-sort",
+	"displayName": "React-Native-Style-Sort",
+	"publisher": "zeroMaster",
+	"description": "Improve productivity during manage styles",
+	"version": "0.2.4",
+	"engines": {
+		"vscode": "^1.35.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.stylesToStyleSheet"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.stylesToStyleSheet",
+				"title": "style Move to StyleSheet"
+			}
+		]
+	},
+	"scripts": {
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"typescript": "^3.3.1",
+		"vscode": "^1.1.28",
+		"eslint": "^5.13.0",
+		"@types/node": "^10.12.21",
+		"@types/mocha": "^2.2.42"
+	}
+}
