@@ -23,6 +23,9 @@
 			}
 		]
 	},
+	"repository": {
+		"url": "https://github.com/SuperLeeK/react-native-style-sort"
+	},
 	"scripts": {
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"test": "node ./node_modules/vscode/bin/test"
