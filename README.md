@@ -12,7 +12,7 @@ This extension make your productivity up;
      4. Complete! Check your StyleSheet, and selection.
 
 ---
-![Sample](https://postfiles.pstatic.net/MjAyMTAxMTFfNjUg/MDAxNjEwMzQ2OTY4MzAw.mb-TGMSQDtw3UgxkP2Qw9BMQAkVJgCHv7agsHub6wcgg.KLcUugKzC3DYHygO4f00QktiZHe9Ch18a7kIgixwsJIg.GIF.ljzero2007/extension.gif?type=w773)
+![Sample](./resources/extension.gif)
 ### F.A.Q.
 - Hello world.
 I'm studying react-native.
