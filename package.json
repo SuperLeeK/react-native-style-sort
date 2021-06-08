@@ -3,7 +3,7 @@
 	"displayName": "React-Native-Style-Sort",
 	"publisher": "zeroMaster",
 	"description": "Improve productivity during manage styles",
-	"version": "0.3.1",
+	"version": "0.4.0",
 	"engines": {
 		"vscode": "^1.35.0"
 	},
