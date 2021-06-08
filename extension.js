@@ -11,6 +11,18 @@ let vscode = require('vscode');
   enumerable: false
 });
 
+const makeStyleSheet = ( str ) => {
+  const startIndex = str.indexOf('{');
+  const lastIndex = str.lastIndexOf('}');
+  const singleArray = str.substr(startIndex + 1, lastIndex - startIndex - 1).split('\n').map(v => v.trim()).filter(e=>e).join('').split(',').map(v => v.trim()).filter(e=>e)
+  const singleObject = singleArray.reduce((p,c) => {
+    const [ key, value ] = c.split(':');
+    p[key] = value.trim();
+    return p;
+  }, {})
+  const result = JSON.stringify( singleObject, null, 4 ).replace(/\"/g,'');
+  return result.substr(0, result.length - 1) + `\t${result[result.length - 1]}`;
+}
 /**
  * @param {ExtensionContext} context
  */
@@ -23,88 +35,34 @@ function activate(context) {
     let selectedText     = editor.document.getText(editor.selection); 
     let totalText        = editor.document.getText();
 
-    if(editor.selection.isEmpty) {
-      window.showInformationMessage('Need to select any text!!')
-      return;
-    };
-
-    const SearchBracketLastIndex = ( array ) => {
-      let depth = 0, result;
-      array.forEach((v,i) => {
-        if(!result) {
-          if(v.includes('{')) depth += 1;
-          if(v.includes('}')) depth -= 1;
-          if(depth == 0 && i > 0) result = i;
-        }
-      })
-      return result;
-    }
+    if(editor.selection.isEmpty) return window.showInformationMessage('Need to select any text!!');
 
     window.showInputBox()
     .then(styleName => {
-      let willRemoveRightHanded = [];
-      
-      let syncText;
-      let isMultiLine = selectedText.split('\n').length > 1;
-      if( isMultiLine ) syncText = selectedText.split('\n');
-      else {
-        syncText = selectedText.split(',').reduce((p,c,i,a) => {
-          let isLast            = i == a.length - 1;
-          let startBracketIndex = c.indexOf('{');
-          let endBracketIndex   = c.indexOf('}');
-               if( startBracketIndex > -1 ) p.push('{', c.replace('{',''));
-          else if( endBracketIndex   > -1 ) p.push(c.replace('}',''), '}');
-          else                              p.push(c)
-               if( !isLast ) p.push( p.pop() + ',' )
-          return p;
-        }, []);
-      }
+      const updateText = makeStyleSheet( selectedText );
+      const updateStyle = `\t${styleName}: ${updateText}`;
 
-      let parsedText = syncText.reduce((p,c,i,a) => {
-        let isLast = a.length - 1 == i || a.length - 2 == i;
-        let isString = c != '{' && c != '}' && c.includes('\'');
+      const startBracketLineIndex = totalText.split('\n').findIndex(v => v.includes('StyleSheet.create('));
+      const startBracketIndex = totalText.split('\n')[startBracketLineIndex].indexOf('StyleSheet.create(') + 'StyleSheet.create('.length;
 
-        if(isString) c = c.replace(/\'/g,'');
-        else {
-          let willRemove = /:( |)(.+)?,/.exec(c)?.[2];
-          willRemoveRightHanded.push( willRemove );
-        }
-        c = c
-        .replace(/(\w+):/g,'"$1":')
-        .replace(/[, ]+}/g,'}')
-        .replace(/\,/g,'')
-        .replace(/\'/g,'')
-        .replace(/\"/g,'')
-        .replace(/:( |)(.+)/g, `: "$2"${isLast ? '' : ','}`);
+      const endBracketLineIndex = totalText.split('\n').splice(startBracketLineIndex).findIndex(v => v.includes(';')) + startBracketLineIndex;
+      const endBracketIndex = totalText.split('\n')[endBracketLineIndex].indexOf(';');
 
-        console.log("c:", c)
+      // console.log("startBracketLineIndex startBracketIndex:", startBracketLineIndex + 1, startBracketIndex)
+      // console.log("endBracketLineIndex endBracketIndex:", endBracketLineIndex + 1, endBracketIndex)
 
-        p.push(c);
-        return p;
-      }, []).map(v => {
-        if(!v.includes(':')) return v;
-        let [ leftH, rightH ] = v.split(':').map(k => k.trim());
-        let matchedRightHand = willRemoveRightHanded.filter(e => rightH.includes(e));
-        if( matchedRightHand.length > 0 ) return `\t\t${leftH}: ${matchedRightHand[0].trim()},`
-        return `\t\t${leftH}: ${rightH}`
-      }).join('\n');
+      const checkLastStyleSheet = totalText.split('\n')[endBracketLineIndex - 1];
+      const hasComma = checkLastStyleSheet.includes(',');
 
-      let updateStyle          = `\t${styleName}: ${parsedText.replace(/"(\w+)":/g, '\t$1:').replace('}','\t}')}\n`;
-      let startIndex           = totalText.split('\n').findIndex(v => v.includes('StyleSheet.create'));
-      let styleSheetArray      = totalText.split('\n').splice(startIndex);
-      let lastIndex            = SearchBracketLastIndex( styleSheetArray );
-
-      let hasComma             = styleSheetArray[lastIndex - 1].includes('},');
-      
-      let lastStylePosition    = new Position(startIndex + lastIndex - 1, styleSheetArray[lastIndex - 1].length);
-      let closeBracketPosition = new Position(startIndex + lastIndex, 0);
+      const preLastPosition = new Position(endBracketLineIndex - 1, 10);
+      const nextPreLastPosition = new Position(endBracketLineIndex - 1, 10);
 
       window.activeTextEditor.edit(builder => {
-        builder.delete(editor.selection)
-        if( !hasComma ) builder.insert(lastStylePosition, ',');
-        builder.insert(closeBracketPosition, updateStyle);
+        if( !hasComma ) builder.insert(preLastPosition, ',\n')
+        builder.delete(editor.selection);
         builder.insert(editor.selection.start, `styles.${styleName}`);
-      });
+        builder.insert(nextPreLastPosition, updateStyle);
+      })
     })
   })
 	context.subscriptions.push(styleSort);

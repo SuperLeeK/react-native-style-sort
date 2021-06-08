@@ -14,5 +14,7 @@ This extension make your productivity up;
 ---
 ![Sample](./resources/extension.gif)
 ### F.A.Q.
-- Hello world.
-I'm studying react-native.
+- Thanks for Downloading and Sorry to don't work extension;
+- Now I fixing little bit, so can move style to StyleSheet;
+- Need to end with semicolon(;) when end of StyleSheet;
+- Thanks a lot!
