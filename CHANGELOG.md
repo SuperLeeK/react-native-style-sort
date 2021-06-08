@@ -4,6 +4,10 @@ All notable changes to the "react-native-style-sort" extension will be documente
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.4.1] - 2021-06-08
+- Now support multi inline style to one StyleSheet
+## [0.4.1] - 2021-06-08
+- 일부 안되는거 빼고 아무튼 다됨
 ## [0.2.4] - 2021-01-14
 - *Hot Fix
 - 한줄 라인의 스타일을 컨버팅 할 때, } 이 닫히기 전에 , 가 나오지 않으면 제대로 출력이 안되는 현상을 수정하였습니다.

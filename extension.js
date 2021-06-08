@@ -59,8 +59,10 @@ function activate(context) {
 
       window.activeTextEditor.edit(builder => {
         if( !hasComma ) builder.insert(preLastPosition, ',\n')
-        builder.delete(editor.selection);
-        builder.insert(editor.selection.start, `styles.${styleName}`);
+        editor.selections.forEach((selection) => {
+          builder.delete(selection);
+          builder.insert(selection.start, `styles.${styleName}`)
+        });
         builder.insert(nextPreLastPosition, updateStyle);
       })
     })
