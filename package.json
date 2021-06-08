@@ -1,6 +1,14 @@
 {
 	"name": "react-native-style-sort",
 	"displayName": "React-Native-Style-Sort",
+	"keywords": [
+		"style",
+		"react",
+		"sort",
+		"react-native",
+		"move",
+		"align"
+	],
 	"publisher": "zeroMaster",
 	"description": "Improve productivity during manage styles",
 	"version": "0.4.2",
@@ -13,6 +21,10 @@
 	"icon": "resources/logo.png",
 	"activationEvents": [
 		"onCommand:extension.stylesToStyleSheet"
+	],
+	"extensionKind": [
+		"ui",
+		"workspace"
 	],
 	"main": "./extension.js",
 	"contributes": {
