@@ -18,3 +18,13 @@ This extension make your productivity up;
 - Now I fixing little bit, so can move style to StyleSheet;
 - Need to end with semicolon(;) when end of StyleSheet;
 - Thanks a lot!
+
+
+### Will Udpate
+---
+- Check StyleSheet for Declaration.
+- Check already declared style.
+- Supply all Animated style attributes.
+- Remove declared but not used style at StyleSheet.
+
+- One call, sort all inline style.

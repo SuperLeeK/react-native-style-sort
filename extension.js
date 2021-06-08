@@ -28,12 +28,12 @@ const makeStyleSheet = ( str ) => {
  */
 function activate(context) {
   const { window, commands, Position } = vscode;
-  let editor = window.activeTextEditor;
+  const editor = window.activeTextEditor;
   if(!editor) return;
 
-  let styleSort = commands.registerCommand('extension.stylesToStyleSheet', () => {
-    let selectedText     = editor.document.getText(editor.selection); 
-    let totalText        = editor.document.getText();
+  const styleSort = commands.registerCommand('extension.stylesToStyleSheet', () => {
+    const selectedText     = editor.document.getText(editor.selection); 
+    const totalText        = editor.document.getText();
 
     if(editor.selection.isEmpty) return window.showInformationMessage('Need to select any text!!');
 
