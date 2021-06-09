@@ -23,6 +23,14 @@ const makeStyleSheet = ( str ) => {
   const result = JSON.stringify( singleObject, null, 4 ).replace(/\"/g,'');
   return result.substr(0, result.length - 1) + `\t${result[result.length - 1]}`;
 }
+
+const searchPrevStyle = ( source, lineIndex ) => {
+  const lineText = source.split('\n')[lineIndex];
+  if( lineText.includes(',') ) return [true, false];
+  else if( lineText.includes('StyleSheet.create') ) return [true, true];
+  else if( lineText.trim() === '' ) return searchPrevStyle( source, lineIndex - 1 );
+  else return [false, false];
+}
 /**
  * @param {ExtensionContext} context
  */
@@ -51,11 +59,9 @@ function activate(context) {
       // console.log("startBracketLineIndex startBracketIndex:", startBracketLineIndex + 1, startBracketIndex)
       // console.log("endBracketLineIndex endBracketIndex:", endBracketLineIndex + 1, endBracketIndex)
 
-      const checkLastStyleSheet = totalText.split('\n')[endBracketLineIndex - 1];
-      const hasComma = checkLastStyleSheet.includes(',');
-
-      const preLastPosition = new Position(endBracketLineIndex - 1, 10);
-      const nextPreLastPosition = new Position(endBracketLineIndex - 1, 10);
+      const [ hasComma, isStart ] = searchPrevStyle( totalText, endBracketLineIndex - 1 );
+      const startPosition = new Position(startBracketLineIndex, 1000);
+      const preLastPosition = new Position(endBracketLineIndex - 1, 1000);
 
       window.activeTextEditor.edit(builder => {
         if( !hasComma ) builder.insert(preLastPosition, ',\n')
@@ -63,7 +69,8 @@ function activate(context) {
           builder.delete(selection);
           builder.insert(selection.start, `styles.${styleName}`)
         });
-        builder.insert(nextPreLastPosition, updateStyle);
+        isStart && builder.insert(startPosition, '\n')
+        builder.insert(preLastPosition, updateStyle);
       })
     })
   })

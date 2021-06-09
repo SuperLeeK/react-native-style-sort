@@ -12,7 +12,7 @@ This extension make your productivity up;
      4. Complete! Check your StyleSheet, and selection.
 
 ---
-![Sample](./resources/extension.gif)
+![Sample](./resources/example.gif)
 ### F.A.Q.
 - Thanks for Downloading and Sorry to don't work extension;
 - Now I fixing little bit, so can move style to StyleSheet;

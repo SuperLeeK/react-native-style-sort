@@ -3,7 +3,8 @@
 All notable changes to the "react-native-style-sort" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
+## [0.4.3] - 2021-06-09
+- Update example gif
 ## [0.4.1] - 2021-06-08
 - Now support multi inline style to one StyleSheet
 ## [0.4.1] - 2021-06-08
