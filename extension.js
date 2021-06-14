@@ -11,6 +11,7 @@ let vscode = require('vscode');
   enumerable: false
 });
 
+// old
 const makeStyleSheet = ( str ) => {
   const startIndex = str.indexOf('{');
   const lastIndex = str.lastIndexOf('}');
@@ -22,6 +23,36 @@ const makeStyleSheet = ( str ) => {
   }, {})
   const result = JSON.stringify( singleObject, null, 4 ).replace(/\"/g,'');
   return result.substr(0, result.length - 1) + `\t${result[result.length - 1]}`;
+}
+
+// latest
+const makeNewStyle = ( str ) => {
+  let brackIndex = 0;
+  return str
+  .replace(/{/g,'{\n')
+  .replace(/}/g,'\n}')
+  .replace(/,/g, ',\n')
+  .split('\n')
+  .map(v=>v.trim())
+  .filter(e=>e)
+  .reduce((p,c) => {
+    let newC = c;
+    if(newC.includes('{')) {
+      p.push(`\t`.repeat(brackIndex) + newC);
+      brackIndex++;
+    }
+    else if(newC.includes('}')) {
+      brackIndex = brackIndex - 1;
+      p.push(`\t`.repeat(brackIndex) + newC);
+    }
+    else {
+      const [ key, value ] = c.split(':').map(v=>v.trim());
+      newC = `${key}: ${value}`;
+      p.push(`\t`.repeat(brackIndex) + newC);
+    }
+    return p;
+  }, [])
+  .join('\n\t');
 }
 
 const searchPrevStyle = ( source, lineIndex ) => {
@@ -47,7 +78,7 @@ function activate(context) {
 
     window.showInputBox()
     .then(styleName => {
-      const updateText = makeStyleSheet( selectedText );
+      const updateText = makeNewStyle( selectedText );
       const updateStyle = `\t${styleName}: ${updateText}`;
 
       const startBracketLineIndex = totalText.split('\n').findIndex(v => v.includes('StyleSheet.create('));
@@ -64,12 +95,13 @@ function activate(context) {
       const preLastPosition = new Position(endBracketLineIndex - 1, 1000);
 
       window.activeTextEditor.edit(builder => {
-        if( !hasComma ) builder.insert(preLastPosition, ',\n')
+        if( !hasComma ) builder.insert(preLastPosition, ',\n');
+        else builder.insert(preLastPosition, '\n');
         editor.selections.forEach((selection) => {
           builder.delete(selection);
           builder.insert(selection.start, `styles.${styleName}`)
         });
-        isStart && builder.insert(startPosition, '\n')
+        isStart && builder.insert(startPosition, '\n');
         builder.insert(preLastPosition, updateStyle);
       })
     })
