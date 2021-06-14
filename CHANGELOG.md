@@ -4,7 +4,7 @@ All notable changes to the "react-native-style-sort" extension will be documente
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [0.4.4] - 2021-06-14
+## [0.4.5] - 2021-06-14
 - 이미 StyleSheet 의 가장 마지막 child가 , 를 가지고 있는 경우 붙어서 출력되던 버그를 수정하였습니다.
 - 구현방식을 개선하여, transForm, shadowOffset 등도 정상적으로 출력이 되도록 수정하였습니다.
 ## [0.4.3] - 2021-06-09

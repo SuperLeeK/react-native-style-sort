@@ -11,7 +11,7 @@
 	],
 	"publisher": "zeroMaster",
 	"description": "Improve productivity during manage styles",
-	"version": "0.4.3",
+	"version": "0.4.4",
 	"engines": {
 		"vscode": "^1.35.0"
 	},
