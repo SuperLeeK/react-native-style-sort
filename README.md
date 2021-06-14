@@ -6,6 +6,11 @@ This extension make your productivity up;
 
   So this extension reduce it.
 
+  ```
+  ***IMPORTANT***
+  Need to type ";" when StyleSheet.create function close.
+  ```
+
      1. Select your style obj with '{}' bracket.
      2. Press (Cmd + Shift + P) then "Style Move to StyleSheet".
      3. Input what you want style name.

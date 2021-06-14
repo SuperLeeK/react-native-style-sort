@@ -31,23 +31,27 @@ const makeNewStyle = ( str ) => {
   return str
   .replace(/{/g,'{\n')
   .replace(/}/g,'\n}')
+  .replace(/\[/g,'[\n')
+  .replace(/\]/g,'\n]')
   .replace(/,/g, ',\n')
   .split('\n')
   .map(v=>v.trim())
   .filter(e=>e)
   .reduce((p,c) => {
     let newC = c;
-    if(newC.includes('{')) {
+    if(newC.includes('{') || newC.includes('[')) {
       p.push(`\t`.repeat(brackIndex) + newC);
       brackIndex++;
     }
-    else if(newC.includes('}')) {
+    else if(newC.includes('}') || newC.includes(']')) {
       brackIndex = brackIndex - 1;
       p.push(`\t`.repeat(brackIndex) + newC);
     }
     else {
-      const [ key, value ] = c.split(':').map(v=>v.trim());
-      newC = `${key}: ${value}`;
+      if( newC.includes(':') ) {
+        const [ key, value ] = newC.split(':').map(v=>v.trim());
+        newC = `${key}: ${value}`;
+      }
       p.push(`\t`.repeat(brackIndex) + newC);
     }
     return p;
@@ -83,6 +87,9 @@ function activate(context) {
 
       const startBracketLineIndex = totalText.split('\n').findIndex(v => v.includes('StyleSheet.create('));
       const startBracketIndex = totalText.split('\n')[startBracketLineIndex].indexOf('StyleSheet.create(') + 'StyleSheet.create('.length;
+      if( !startBracketLineIndex || startBracketLineIndex < 0 ) return window.showInformationMessage('Need to declare StyleSheet.create first!!');
+
+      const styleSheetName = totalText.split('\n')[startBracketLineIndex].split('=')[0].split(' ').filter(e=>e)[1];
 
       const endBracketLineIndex = totalText.split('\n').splice(startBracketLineIndex).findIndex(v => v.includes(';')) + startBracketLineIndex;
       const endBracketIndex = totalText.split('\n')[endBracketLineIndex].indexOf(';');
@@ -99,7 +106,7 @@ function activate(context) {
         else builder.insert(preLastPosition, '\n');
         editor.selections.forEach((selection) => {
           builder.delete(selection);
-          builder.insert(selection.start, `styles.${styleName}`)
+          builder.insert(selection.start, `${styleSheetName}.${styleName}`)
         });
         isStart && builder.insert(startPosition, '\n');
         builder.insert(preLastPosition, updateStyle);
